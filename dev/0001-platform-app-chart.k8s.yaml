@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platform-app-deployment-dynamodb
+  namespace: hybrid
+spec:
+  minReadySeconds: 0
+  progressDeadlineSeconds: 600
+  replicas: 2
+  selector:
+    matchLabels:
+      cdk8s.io/metadata.addr: platform-app-chart-platform-app-deployment-dynamodb-c86ddbc6
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        cdk8s.io/metadata.addr: platform-app-chart-platform-app-deployment-dynamodb-c86ddbc6
+    spec:
+      automountServiceAccountToken: true
+      containers:
+        - env:
+            - name: TABLE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: export-dynamodb-tablename
+                  name: export-dynamodb-urls-info
+                  optional: false
+            - name: AWS_REGION
+              valueFrom:
+                configMapKeyRef:
+                  key: export-dynamodb-region
+                  name: export-dynamodb-urls-info
+                  optional: false
+          image: 113191093292.dkr.ecr.us-east-2.amazonaws.com/dynamodb-app:latest
+          imagePullPolicy: Always
+          name: platform-hybrid-container-dynamodb
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 250m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: true
+            privileged: true
+            readOnlyRootFilesystem: false
+            runAsNonRoot: false
+      dnsPolicy: ClusterFirst
+      hostNetwork: false
+      restartPolicy: Always
+      securityContext:
+        fsGroupChangePolicy: Always
+        runAsNonRoot: true
+      serviceAccountName: eks-dynamodb-app-sa
+      setHostnameAsFQDN: false
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platform-hybrid-service-dynamodb
+  namespace: hybrid
+spec:
+  externalIPs: []
+  ports:
+    - port: 9090
+      targetPort: 8080
+  selector:
+    cdk8s.io/metadata.addr: platform-app-chart-platform-app-deployment-dynamodb-c86ddbc6
+  type: LoadBalancer
