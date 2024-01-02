@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: platform-hybrid-1
+  name: platform-hybrid
 spec: {}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: export-dynamodb-urls-info
-  namespace: platform-hybrid-1
+  namespace: platform-hybrid
 data:
   export-dynamodb-region: us-east-2
   export-dynamodb-tablename: urls
@@ -20,5 +20,5 @@ metadata:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::113191093292:role/DDBServiceRole
   name: eks-dynamodb-app-sa
-  namespace: platform-hybrid-1
+  namespace: platform-hybrid
 automountServiceAccountToken: true
