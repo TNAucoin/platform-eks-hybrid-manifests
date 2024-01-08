@@ -101,18 +101,16 @@ spec:
       stabilizationWindowSeconds: 0
   maxReplicas: 10
   metrics:
-    - resource:
-        name: cpu
+    - pods:
+        metric:
+          name: requests-per-second
+          selector:
+            matchLabels:
+              app: platform-app-dynamodb
         target:
-          averageUtilization: 70
+          averageUtilization: 50
           type: Utilization
-      type: Resource
-    - resource:
-        name: memory
-        target:
-          averageUtilization: 70
-          type: Utilization
-      type: Resource
+      type: Pods
   minReplicas: 1
   scaleTargetRef:
     apiVersion: apps/v1
