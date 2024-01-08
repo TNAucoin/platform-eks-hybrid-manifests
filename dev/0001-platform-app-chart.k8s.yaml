@@ -79,6 +79,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: platform-app-chart-platform-app-hpa-dynamodb-c8bf7ea4
+  namespace: hybrid
 spec:
   behavior:
     scaleDown:
