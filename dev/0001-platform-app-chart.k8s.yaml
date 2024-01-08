@@ -108,8 +108,8 @@ spec:
             matchLabels:
               app: platform-app-dynamodb
         target:
-          type: Value
-          value: 50
+          averageUtilization: 70
+          type: Utilization
       type: Pods
   minReplicas: 1
   scaleTargetRef:
