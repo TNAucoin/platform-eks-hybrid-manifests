@@ -84,11 +84,11 @@ spec:
   behavior:
     scaleDown:
       policies:
-        - periodSeconds: 300
+        - periodSeconds: 30
           type: Pods
           value: 1
       selectPolicy: Max
-      stabilizationWindowSeconds: 300
+      stabilizationWindowSeconds: 30
     scaleUp:
       policies:
         - periodSeconds: 60
